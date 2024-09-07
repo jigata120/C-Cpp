@@ -1,20 +1,21 @@
-
 #include <iostream>
 #include <vector>
 #include <string>
 
 class Device {
 protected:
-    std::string name;
-    bool status;
+   std::string name;
+    bool isTurnedOn = false;
+    bool updateAvailable = false;
+    std::string ipAddress;
 
 public:
-    Device(const std::string& name) : name(name), status(false) {}
+    Device(const std::string& name) : name(name), isTurnedOn(false) {}
     virtual ~Device() {}
 
     virtual void turnOn() = 0;
     virtual void turnOff() = 0;
-    virtual std::string getStatus() const = 0;
+    virtual std::string getisTurnedOn() const = 0;
     std::string getName() const { return name; }
 };
 
@@ -27,17 +28,17 @@ public:
         : Device(name), brightness(brightness) {}
 
     void turnOn() override {
-        status = true;
+        isTurnedOn = true;
         std::cout << name << " turned on.\n";
     }
 
     void turnOff() override {
-        status = false;
+        isTurnedOn = false;
         std::cout << name << " turned off.\n";
     }
 
-    std::string getStatus() const override {
-        return status ? "On" : "Off";
+    std::string getisTurnedOn() const override {
+        return isTurnedOn ? "On" : "Off";
     }
 
     void setBrightness(int brightness) {
@@ -59,17 +60,17 @@ public:
         : Device(name), temperature(temperature) {}
 
     void turnOn() override {
-        status = true;
+        isTurnedOn = true;
         std::cout << name << " turned on.\n";
     }
 
     void turnOff() override {
-        status = false;
+        isTurnedOn = false;
         std::cout << name << " turned off.\n";
     }
 
-    std::string getStatus() const override {
-        return status ? "On" : "Off";
+    std::string getisTurnedOn() const override {
+        return isTurnedOn ? "On" : "Off";
     }
 
     void setTemperature(int temperature) {
@@ -91,6 +92,13 @@ public:
         devices.push_back(device);
         std::cout << device->getName() << " added to SmartHub.\n";
     }
+    void stormMode(Device* device){
+        std::cout  << " Storm is coming shutting down all devices.\n";
+        for (auto* device : devices) {
+            device->turnOff();
+}
+
+    }
 
     void controlDevice(const std::string& name, bool turnOn) {
         for (auto* device : devices) {
@@ -101,9 +109,9 @@ public:
         }
     }
 
-    void showStatus() {
+    void showisTurnedOn() {
         for (const auto* device : devices) {
-            std::cout << device->getName() << ": " << device->getStatus() << "\n";
+            std::cout << device->getName() << ": " << device->getisTurnedOn() << "\n";
         }
     }
 };
@@ -122,7 +130,7 @@ int main() {
     light.setBrightness(90);
     thermostat.setTemperature(75);
 
-    hub.showStatus();
+    hub.showisTurnedOn();
 
     return 0;
 }
